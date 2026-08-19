@@ -1,0 +1,160 @@
+ j.matthew@nexus.htb
+ 
+ 
+ gobuster dir -u http://nexus.htb -w /usr/share/wordlists/dirb/common.txt -t 50
+===============================================================
+Gobuster v3.6
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://nexus.htb
+[+] Method:                  GET
+[+] Threads:                 50
+[+] Wordlist:                /usr/share/wordlists/dirb/common.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.6
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+/index.html           (Status: 200) [Size: 49296]
+Progress: 4614 / 4615 (99.98%)
+===============================================================
+Finished
+===============================================================
+   nmap -p- -sC -sV -vv 10.129.102.82                                          
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-08-19 09:16 EDT
+NSE: Loaded 157 scripts for scanning.
+NSE: Script Pre-scanning.
+NSE: Starting runlevel 1 (of 3) scan.
+Initiating NSE at 09:16
+Completed NSE at 09:16, 0.00s elapsed
+NSE: Starting runlevel 2 (of 3) scan.
+Initiating NSE at 09:16
+Completed NSE at 09:16, 0.00s elapsed
+NSE: Starting runlevel 3 (of 3) scan.
+Initiating NSE at 09:16
+Completed NSE at 09:16, 0.00s elapsed
+Initiating Ping Scan at 09:16
+Scanning 10.129.102.82 [4 ports]
+Completed Ping Scan at 09:16, 0.22s elapsed (1 total hosts)
+Initiating Parallel DNS resolution of 1 host. at 09:16
+Completed Parallel DNS resolution of 1 host. at 09:16, 0.01s elapsed
+Initiating SYN Stealth Scan at 09:16
+Scanning 10.129.102.82 [65535 ports]
+Discovered open port 80/tcp on 10.129.102.82
+Discovered open port 22/tcp on 10.129.102.82
+Completed SYN Stealth Scan at 09:16, 38.32s elapsed (65535 total ports)
+Initiating Service scan at 09:16
+Scanning 2 services on 10.129.102.82
+Completed Service scan at 09:16, 6.17s elapsed (2 services on 1 host)
+NSE: Script scanning 10.129.102.82.
+NSE: Starting runlevel 1 (of 3) scan.
+Initiating NSE at 09:16
+Completed NSE at 09:16, 2.48s elapsed
+NSE: Starting runlevel 2 (of 3) scan.
+Initiating NSE at 09:16
+Completed NSE at 09:16, 0.33s elapsed
+NSE: Starting runlevel 3 (of 3) scan.
+Initiating NSE at 09:16
+Completed NSE at 09:16, 0.00s elapsed
+Nmap scan report for 10.129.102.82
+Host is up, received echo-reply ttl 63 (0.081s latency).
+Scanned at 2026-08-19 09:16:08 EDT for 47s
+Not shown: 65533 closed tcp ports (reset)
+PORT   STATE SERVICE REASON         VERSION
+22/tcp open  ssh     syn-ack ttl 63 OpenSSH 9.6p1 Ubuntu 3ubuntu13.16 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   256 0c:4b:d2:76:ab:10:06:92:05:dc:f7:55:94:7f:18:df (ECDSA)
+| ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBN9Ju3bTZsFozwXY1B2KIlEY4BA+RcNM57w4C5EjOw1QegUUyCJoO4TVOKfzy/9kd3WrPEj/FYKT2agja9/PM44=
+|   256 2d:6d:4a:4c:ee:2e:11:b6:c8:90:e6:83:e9:df:38:b0 (ED25519)
+|_ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH9qI0OvMyp03dAGXR0UPdxw7hjSwMR773Yb9Sne+7vD
+80/tcp open  http    syn-ack ttl 63 nginx 1.24.0 (Ubuntu)
+| http-methods: 
+|_  Supported Methods: GET HEAD POST OPTIONS
+|_http-title: Did not follow redirect to http://nexus.htb/
+|_http-server-header: nginx/1.24.0 (Ubuntu)
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+NSE: Script Post-scanning.
+NSE: Starting runlevel 1 (of 3) scan.
+Initiating NSE at 09:16
+Completed NSE at 09:16, 0.00s elapsed
+NSE: Starting runlevel 2 (of 3) scan.
+Initiating NSE at 09:16
+Completed NSE at 09:16, 0.00s elapsed
+NSE: Starting runlevel 3 (of 3) scan.
+Initiating NSE at 09:16
+Completed NSE at 09:16, 0.00s elapsed
+Read data files from: /usr/share/nmap
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 48.04 seconds
+
+ffuf -u http://nexus.htb -w /usr/share/wordlists/dirb/big.txt -H "Host: FUZZ.nexus.htb" -ac
+
+
+        /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v2.1.0-dev
+________________________________________________
+
+ :: Method           : GET
+ :: URL              : http://nexus.htb
+ :: Wordlist         : FUZZ: /usr/share/wordlists/dirb/big.txt
+ :: Header           : Host: FUZZ.nexus.htb
+ :: Follow redirects : false
+ :: Calibration      : true
+ :: Timeout          : 10
+ :: Threads          : 40
+ :: Matcher          : Response status: 200-299,301,302,307,401,403,405,500
+________________________________________________
+
+billing                 [Status: 302, Size: 390, Words: 60, Lines: 12, Duration: 5148ms]
+git                     [Status: 200, Size: 14474, Words: 1195, Lines: 242, Duration: 98ms]
+:: Progress: [20469/20469] :: Job [1/1] :: 498 req/sec :: Duration: [0:00:42] :: Errors: 0 ::
+                                                                                                                                        
+┌──(kali㉿kali)-[~]
+└─$ 
+
+
+after opening the console and seeing errors from /assets used gobuster again and gonna do it on billing 
+
+
+
+           Raw packets sent: 65629 (2.888MB) | Rcvd: 65536 (2.621MB)
+                                          gobuster dir -u http://git.nexus.htb -w /usr/share/seclists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-medium.txt -t 50
+===============================================================
+Gobuster v3.6
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://git.nexus.htb
+[+] Method:                  GET
+[+] Threads:                 50
+[+] Wordlist:                /usr/share/seclists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-medium.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.6
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+/admin                (Status: 200) [Size: 22803]
+/issues               (Status: 303) [Size: 60] [--> /user/login?redirect_to=%2Fissues]
+/v2                   (Status: 401) [Size: 49]
+/explore              (Status: 303) [Size: 41] [--> /explore/repos]
+/Admin                (Status: 200) [Size: 22802]
+/milestones           (Status: 303) [Size: 64] [--> /user/login?redirect_to=%2Fmilestones]
+/notifications        (Status: 303) [Size: 67] [--> /user/login?redirect_to=%2Fnotifications]
+/jones                (Status: 200) [Size: 20221]
+ keeping an eye on admin issus and redirects.
+ 
+ checked the admin page for the password and found some in history.
+ 
+                            the password and the email from the first section matched.N27xh!!2ucY04
+                            
+ "krayin_crm_session" => "LRTFMMsRuF2xFTzGdiuP9iO5JfAU1eXwWYBjOJtI"
+                            
+                            
