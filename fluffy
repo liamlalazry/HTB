@@ -1,0 +1,19 @@
+lets go fluffy
+ok so i get a windows credentials lets figure out for what and how to put in on remote
+so i learned the mstsc so i will try to find the linux version and i found freerdp3
+lets try it it didnt work tryied also remmina it seems that the machine not letting it 
+so i tried to get a shell with winrm sudo evil-winrm -i 10.10.11.69 -u j.fleischman -p 'J0elTHEM4n1990!'
+but a gpo policy stopped me so i am trying to nmap to maybe find any smb or something open to try connect with it 
+ok so the nmap scan taking forever i tried to keep things going with smbmap smbmap is a tool for enum of smb permissions 
+
+[+] IP: 10.10.11.69:445 Name: fluffy
+        Disk        Permissions
+        ----        -----------
+        IPC$        READ
+        IT          READ, WRITE
+        NETLOGON    READ
+        SYSVOL      READ
+so i will try to connect on smb to find anything 
+smbclient //10.10.11.69/IT -U j.fleischman
+J0elTHEM4n1990!
+ok im in 
