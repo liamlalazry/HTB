@@ -1,0 +1,46 @@
+so this is a linux machine lets try it out:
+
+**How many TCP ports are listening on BoardLight?**
+let simple nmap 
+ nmap -sS -T5 -Pn 10.10.11.11                
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-06-10 14:08 EDT
+Nmap scan report for 10.10.11.11
+Host is up (0.077s latency).
+Not shown: 998 closed tcp ports (reset)
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+
+Nmap done: 1 IP address (1 host up) scanned in 1.74 seconds
+
+**What is the domain name used by the box?**
+   for now i see that it has a non default web page
+   and it looks that board.htb is their domain name as it in the email and down the page all right reserved 
+   
+   **What is the name of the application running on a virtual host of board.htb?**
+   first what is virtual host - so it a way to use multiple apps on a one domain name ok 
+   first to scan for vhosts we need to use domain name and not the ip as the dns server dont know how to handle the ip so we need to configure the etc/hosts then we will try to brute force with gobuster
+so it should have worked i didnt understood what happend now this worked 
+ffuf -w /usr/share/seclists/Discovery/DNS/bitquark-subdomains-top100000.txt -u http://board.htb/ -H "Host: FUZZ.board.htb" -fs 15949 -s
+crm
+crm is the subdomain update the hosts file
+in the crm we found dolibarr app
+**what version of Dolibarr is running on BoardLight?**
+so it war wroten in front of my face 17.0.0
+**What is the default password for the admin user on Dolibarr?**
+lets google it 
+so when installing on docker the default is admin admin and it got me in
+**What is the 2023 CVE ID for an authenticated vulnerability that can lead to remote code execution in this version of Dolibarr?**
+after quick google it cve-2023-30253
+now lets metasploit it and exploit this weakness
+**What user is the Dolibarr application running as on BoardLight?**
+after exploiting it using github repo got shell and the username is www-data
+
+**What is the full path of the file that contains the Dolibarr database connection information?**
+google search about the server 
+
+what i learned ?
+if i already has creds try rhem on ssh first
+so 
+
+
